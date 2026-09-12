@@ -1,0 +1,13 @@
+{
+  "name": "focus-pomodoro-timer",
+  "version": "1.0.0",
+  "description": "FOCUS — Minimal, distraction-free Pomodoro timer. PWA installable.",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . --listen 3000 --single",
+    "start": "npx serve . --listen 3000 --single",
+    "build": "echo 'No build step required — pure HTML/CSS/JS'"
+  },
+  "keywords": ["pomodoro", "timer", "focus", "pwa", "productivity"],
+  "license": "MIT"
+}

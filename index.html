@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="FOCUS — A minimal, distraction-free Pomodoro timer. Black screen, white text, accurate countdown." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FOCUS" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="FOCUS — Pomodoro Timer" />
+  <meta property="og:description" content="Minimal, distraction-free Pomodoro timer." />
+  <meta property="og:type" content="website" />
+
+  <title>FOCUS</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- ── Settings toggle ────────────────────────────────────────────── -->
+  <button
+    class="btn-settings"
+    id="btn-settings"
+    aria-label="Open settings"
+    aria-haspopup="dialog"
+  >SETTINGS</button>
+
+  <!-- ── Main app ───────────────────────────────────────────────────── -->
+  <main class="app" role="main">
+
+    <p class="app-title" aria-label="App name">FOCUS</p>
+
+    <!-- Mode selector -->
+    <nav class="mode-selector" role="tablist" aria-label="Pomodoro modes">
+      <button
+        class="mode-btn active"
+        id="mode-focus"
+        role="tab"
+        aria-selected="true"
+        data-mode="FOCUS"
+        aria-label="Focus mode (keyboard: 1)"
+      >Focus</button>
+      <button
+        class="mode-btn"
+        id="mode-short"
+        role="tab"
+        aria-selected="false"
+        data-mode="SHORT BREAK"
+        aria-label="Short break mode (keyboard: 2)"
+      >Short Break</button>
+      <button
+        class="mode-btn"
+        id="mode-long"
+        role="tab"
+        aria-selected="false"
+        data-mode="LONG BREAK"
+        aria-label="Long break mode (keyboard: 3)"
+      >Long Break</button>
+    </nav>
+
+    <!-- Timer -->
+    <div class="timer-block">
+      <p class="mode-label" id="mode-label" aria-live="polite">FOCUS</p>
+
+      <time
+        class="timer-display"
+        id="timer-display"
+        aria-live="off"
+        aria-label="Timer"
+        datetime="PT25M"
+        role="timer"
+      >00:25:00</time>
+
+      <p class="session-label" id="session-label" aria-live="polite">SESSION 1 / 4</p>
+    </div>
+
+    <!-- Primary control -->
+    <div class="controls-primary">
+      <button
+        class="btn-start"
+        id="btn-start"
+        aria-label="Start timer (Space)"
+      >START</button>
+    </div>
+
+    <!-- Secondary controls -->
+    <div class="controls-secondary" role="group" aria-label="Timer controls">
+      <button
+        class="btn-secondary"
+        id="btn-reset"
+        aria-label="Reset timer (R)"
+      >RESET</button>
+      <button
+        class="btn-secondary"
+        id="btn-skip"
+        aria-label="Skip to next session (S)"
+      >SKIP</button>
+    </div>
+
+    <!-- Quick presets -->
+    <div class="presets" role="group" aria-label="Quick duration presets">
+      <button class="preset-btn" data-minutes="25" aria-label="Set 25 minute focus">25 MIN</button>
+      <button class="preset-btn" data-minutes="45" aria-label="Set 45 minute focus">45 MIN</button>
+      <button class="preset-btn" data-minutes="60" aria-label="Set 1 hour focus">60 MIN</button>
+      <button class="preset-btn" data-minutes="90" aria-label="Set 90 minute focus">90 MIN</button>
+      <button class="btn-custom-open" id="btn-custom" aria-label="Set custom duration" aria-expanded="false" aria-controls="custom-form">CUSTOM</button>
+    </div>
+
+    <!-- Custom duration form -->
+    <div class="custom-form hidden" id="custom-form" role="group" aria-label="Custom duration input">
+      <div class="custom-input-group">
+        <label for="custom-hours" class="sr-only">Hours</label>
+        <input
+          type="number"
+          id="custom-hours"
+          min="0" max="23"
+          placeholder="HH"
+          value="0"
+          aria-label="Hours"
+          autocomplete="off"
+        />
+        <span class="custom-sep" aria-hidden="true">:</span>
+        <label for="custom-mins" class="sr-only">Minutes</label>
+        <input
+          type="number"
+          id="custom-mins"
+          min="0" max="59"
+          placeholder="MM"
+          value="25"
+          aria-label="Minutes"
+          autocomplete="off"
+        />
+        <span class="custom-sep" aria-hidden="true">:</span>
+        <label for="custom-secs" class="sr-only">Seconds</label>
+        <input
+          type="number"
+          id="custom-secs"
+          min="0" max="59"
+          placeholder="SS"
+          value="0"
+          aria-label="Seconds"
+          autocomplete="off"
+        />
+      </div>
+      <button class="btn-custom-apply" id="btn-custom-apply" aria-label="Apply custom duration">SET</button>
+      <button class="btn-custom-cancel" id="btn-custom-cancel" aria-label="Cancel custom duration">✕</button>
+    </div>
+
+    <!-- Error message -->
+    <p class="error-msg hidden" id="error-msg" role="alert" aria-live="assertive"></p>
+
+  </main>
+
+  <!-- ── Settings overlay ───────────────────────────────────────────── -->
+  <div
+    class="settings-overlay hidden"
+    id="settings-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Settings"
+    aria-hidden="true"
+  >
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h2 class="settings-title">Settings</h2>
+        <button class="btn-close" id="btn-close-settings" aria-label="Close settings">✕</button>
+      </div>
+
+      <!-- Duration section -->
+      <section class="settings-section" aria-labelledby="sec-durations">
+        <p class="settings-section-title" id="sec-durations">Durations</p>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-focus-mins">
+            Focus
+            <small>minutes</small>
+          </label>
+          <input type="number" id="set-focus-mins" min="1" max="1440" value="25" aria-label="Focus duration in minutes" />
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-short-mins">
+            Short Break
+            <small>minutes</small>
+          </label>
+          <input type="number" id="set-short-mins" min="1" max="1440" value="5" aria-label="Short break duration in minutes" />
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-long-mins">
+            Long Break
+            <small>minutes</small>
+          </label>
+          <input type="number" id="set-long-mins" min="1" max="1440" value="15" aria-label="Long break duration in minutes" />
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-sessions">
+            Sessions before long break
+            <small>1 – 10</small>
+          </label>
+          <input type="number" id="set-sessions" min="1" max="10" value="4" aria-label="Number of focus sessions before long break" />
+        </div>
+      </section>
+
+      <!-- Behaviour section -->
+      <section class="settings-section" aria-labelledby="sec-behaviour">
+        <p class="settings-section-title" id="sec-behaviour">Behaviour</p>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-autostart">
+            Auto-start next session
+          </label>
+          <label class="toggle" aria-label="Auto-start next session">
+            <input type="checkbox" id="set-autostart" role="switch" aria-checked="false" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-sound">
+            Sound
+          </label>
+          <label class="toggle" aria-label="Sound enabled">
+            <input type="checkbox" id="set-sound" checked role="switch" aria-checked="true" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="set-notifications">
+            Desktop notifications
+          </label>
+          <label class="toggle" aria-label="Desktop notifications enabled">
+            <input type="checkbox" id="set-notifications" checked role="switch" aria-checked="true" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Keyboard shortcuts reference -->
+      <section class="settings-section" aria-labelledby="sec-shortcuts">
+        <p class="settings-section-title" id="sec-shortcuts">Keyboard Shortcuts</p>
+        <div class="setting-row">
+          <span class="setting-label">Space</span>
+          <span class="setting-label" style="color:var(--fg-dim)">Start / Pause</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">R</span>
+          <span class="setting-label" style="color:var(--fg-dim)">Reset</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">S</span>
+          <span class="setting-label" style="color:var(--fg-dim)">Skip</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">1 / 2 / 3</span>
+          <span class="setting-label" style="color:var(--fg-dim)">Switch mode</span>
+        </div>
+      </section>
+
+      <button class="btn-save-settings" id="btn-save-settings">Save Settings</button>
+    </div>
+  </div>
+
+  <!-- ── Install banner ─────────────────────────────────────────────── -->
+  <div class="install-banner hidden" id="install-banner" role="complementary" aria-label="Install app">
+    <span>Install FOCUS as an app</span>
+    <button class="btn-install" id="btn-install" aria-label="Install FOCUS app">INSTALL</button>
+    <button class="btn-install-dismiss" id="btn-install-dismiss" aria-label="Dismiss install banner">✕</button>
+  </div>
+
+  <!-- ── Keyboard hint (desktop only) ──────────────────────────────── -->
+  <div class="kbd-hint" aria-hidden="true">
+    <span>SPACE start/pause</span>
+    <span>R reset · S skip</span>
+    <span>1 · 2 · 3 switch mode</span>
+  </div>
+
+  <!-- Visually hidden utility class for screen readers -->
+  <style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}</style>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
